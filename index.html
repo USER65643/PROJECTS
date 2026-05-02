@@ -1,0 +1,556 @@
+# PROJECTS
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>yourname.dev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Suisse+Intl:wght@300;400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #080808;
+    --white: #f5f2ed;
+    --gray-1: #1a1a1a;
+    --gray-2: #2e2e2e;
+    --gray-3: #555;
+    --gray-4: #888;
+    --gray-5: #bbb;
+    --mono: 'IBM Plex Mono', monospace;
+    --serif: 'Playfair Display', Georgia, serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--mono);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  #cursor {
+    width: 12px; height: 12px;
+    background: var(--white);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, background 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  #cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(245,242,237,0.35);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.45s cubic-bezier(0.23,1,0.32,1), width 0.3s, height 0.3s, border-color 0.3s;
+  }
+  body.hovering #cursor { transform: translate(-50%,-50%) scale(0); }
+  body.hovering #cursor-ring { width: 56px; height: 56px; border-color: rgba(245,242,237,0.7); }
+
+  /* ── LOADER ── */
+  #loader {
+    position: fixed; inset: 0; background: var(--black);
+    z-index: 8888;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px;
+  }
+  #loader-name {
+    font-family: var(--serif);
+    font-size: clamp(32px, 6vw, 52px);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  #loader-name span {
+    display: inline-block;
+    animation: reveal-char 0.6s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  #loader-bar-wrap {
+    width: 180px; height: 1px; background: var(--gray-2);
+  }
+  #loader-bar {
+    height: 1px; background: var(--white); width: 0%;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+  #loader.fade-out {
+    animation: loader-out 0.7s cubic-bezier(0.4,0,0.2,1) 0.2s both;
+  }
+  @keyframes loader-out {
+    to { opacity: 0; transform: translateY(-8px); visibility: hidden; }
+  }
+  @keyframes reveal-char {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LAYOUT ── */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 40px;
+    opacity: 0;
+    transition: opacity 0.8s ease 0.3s;
+  }
+  main.visible { opacity: 1; }
+
+  /* ── NAV ── */
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 36px 0 0;
+    border-bottom: 1px solid var(--gray-2);
+    padding-bottom: 28px;
+  }
+  .nav-logo {
+    font-family: var(--serif); font-style: italic; font-size: 18px;
+    color: var(--white); text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--gray-4); text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -2px; left: 0;
+    width: 0; height: 1px; background: var(--white);
+    transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 96px 0 80px;
+    border-bottom: 1px solid var(--gray-2);
+    position: relative;
+  }
+  .hero-kicker {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gray-4); margin-bottom: 28px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-kicker::before {
+    content: ''; width: 32px; height: 1px; background: var(--gray-3);
+  }
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(54px, 10vw, 96px);
+    font-weight: 400;
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    margin-bottom: 40px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gray-4);
+  }
+  .hero-desc {
+    font-size: 13px; line-height: 1.8;
+    color: var(--gray-4);
+    max-width: 420px;
+    font-weight: 300;
+    margin-bottom: 48px;
+  }
+  .hero-actions { display: flex; gap: 16px; align-items: center; }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    background: var(--white); color: var(--black);
+    border: none; padding: 14px 28px;
+    cursor: none; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::after {
+    content: ''; position: absolute; inset: 0;
+    background: var(--black); transform: translateX(-101%);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .btn-primary:hover::after { transform: translateX(0); }
+  .btn-primary:hover { color: var(--white); box-shadow: 0 0 0 1px var(--white); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-ghost {
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--gray-4); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: color 0.2s; padding: 14px 0;
+  }
+  .btn-ghost:hover { color: var(--white); }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap {
+    overflow: hidden; padding: 20px 0;
+    border-bottom: 1px solid var(--gray-2);
+  }
+  .marquee-track {
+    display: flex; gap: 0;
+    animation: marquee 22s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--gray-3); padding: 0 40px;
+    display: flex; align-items: center; gap: 40px;
+  }
+  .marquee-item::after { content: '◆'; font-size: 6px; margin-left: 40px; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── PROJECTS ── */
+  .section-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 56px 0 32px;
+  }
+  .section-label {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray-4);
+  }
+  .section-count { font-size: 10px; color: var(--gray-3); }
+
+  .project-list { border-top: 1px solid var(--gray-2); }
+
+  .project-item {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--gray-2);
+    text-decoration: none;
+    color: inherit;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    transition: padding-left 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .project-item::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 0; background: var(--gray-1);
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    z-index: 0;
+  }
+  .project-item:hover::before { width: 100%; }
+  .project-item:hover { padding-left: 16px; }
+  .project-item > * { position: relative; z-index: 1; }
+
+  .proj-num {
+    font-size: 11px; color: var(--gray-3); letter-spacing: 0.06em;
+    font-weight: 300;
+  }
+  .proj-info {}
+  .proj-name {
+    font-family: var(--serif); font-size: 22px; font-weight: 400;
+    color: var(--white); margin-bottom: 4px; letter-spacing: -0.01em;
+    transition: letter-spacing 0.3s;
+  }
+  .project-item:hover .proj-name { letter-spacing: 0.01em; }
+  .proj-desc { font-size: 11px; color: var(--gray-4); letter-spacing: 0.02em; font-weight: 300; }
+  .proj-meta { text-align: right; }
+  .proj-tag {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gray-3); display: block; margin-bottom: 6px;
+  }
+  .proj-year { font-size: 11px; color: var(--gray-3); }
+  .proj-arrow {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+    opacity: 0; font-size: 16px; color: var(--white);
+    margin-left: 12px;
+  }
+  .project-item:hover .proj-arrow { opacity: 1; transform: translateX(4px); }
+
+  /* ── ABOUT / STATS ── */
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--gray-2);
+    border: 1px solid var(--gray-2);
+    margin: 56px 0;
+  }
+  .about-cell {
+    background: var(--black); padding: 40px 36px;
+  }
+  .about-cell:first-child { grid-column: 1 / -1; }
+  .stat-num {
+    font-family: var(--serif); font-size: 56px; font-weight: 400;
+    line-height: 1; margin-bottom: 8px; letter-spacing: -0.04em;
+    display: flex; align-items: baseline; gap: 4px;
+  }
+  .stat-num sup { font-size: 20px; font-style: italic; color: var(--gray-4); }
+  .stat-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-4); }
+  .about-text {
+    font-size: 14px; line-height: 1.9; color: var(--gray-4);
+    font-weight: 300; max-width: 540px;
+  }
+  .about-text strong { color: var(--white); font-weight: 400; }
+
+  /* ── LINKS / FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--gray-2);
+    padding: 40px 0 56px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 24px;
+  }
+  .footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
+  .footer-link {
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gray-3); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .footer-link:hover { color: var(--white); }
+  .footer-copy { font-size: 11px; color: var(--gray-3); letter-spacing: 0.06em; }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  /* ── SCANLINE OVERLAY ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px
+    );
+    pointer-events: none; z-index: 7777;
+  }
+
+  /* ── COUNT-UP ── */
+  .countup { display: inline; }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div id="loader-name"></div>
+  <div id="loader-bar-wrap"><div id="loader-bar"></div></div>
+</div>
+
+<!-- MAIN -->
+<main id="main">
+  <nav class="reveal">
+    <a href="#" class="nav-logo">yourname</a>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#">Contact</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-kicker reveal">Software Engineer & Builder</div>
+    <h1 class="hero-title reveal" style="transition-delay:0.1s">
+      Building<br><em>things</em><br>that work
+    </h1>
+    <p class="hero-desc reveal" style="transition-delay:0.18s">
+      I craft digital products with obsessive attention to detail — from architecture to the last pixel. Based somewhere with good coffee.
+    </p>
+    <div class="hero-actions reveal" style="transition-delay:0.24s">
+      <a href="#work" class="btn-primary"><span>View my work</span> <span>↓</span></a>
+      <a href="#" class="btn-ghost">Download CV →</a>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <div class="marquee-item">React</div>
+      <div class="marquee-item">TypeScript</div>
+      <div class="marquee-item">Node.js</div>
+      <div class="marquee-item">Python</div>
+      <div class="marquee-item">Postgres</div>
+      <div class="marquee-item">AWS</div>
+      <div class="marquee-item">Docker</div>
+      <div class="marquee-item">Figma</div>
+      <div class="marquee-item">React</div>
+      <div class="marquee-item">TypeScript</div>
+      <div class="marquee-item">Node.js</div>
+      <div class="marquee-item">Python</div>
+      <div class="marquee-item">Postgres</div>
+      <div class="marquee-item">AWS</div>
+      <div class="marquee-item">Docker</div>
+      <div class="marquee-item">Figma</div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div id="work">
+    <div class="section-header reveal">
+      <span class="section-label">Selected projects</span>
+      <span class="section-count">03 works</span>
+    </div>
+    <div class="project-list">
+      <a class="project-item reveal" href="#" style="transition-delay:0.06s">
+        <span class="proj-num">01</span>
+        <div class="proj-info">
+          <div class="proj-name">Project One <span class="proj-arrow">→</span></div>
+          <div class="proj-desc">A brief description of what this project does and why it matters</div>
+        </div>
+        <div class="proj-meta">
+          <span class="proj-tag">Web app</span>
+          <span class="proj-year">2024</span>
+        </div>
+      </a>
+      <a class="project-item reveal" href="#" style="transition-delay:0.12s">
+        <span class="proj-num">02</span>
+        <div class="proj-info">
+          <div class="proj-name">Project Two <span class="proj-arrow">→</span></div>
+          <div class="proj-desc">Another thing you built that people find useful</div>
+        </div>
+        <div class="proj-meta">
+          <span class="proj-tag">Open source</span>
+          <span class="proj-year">2024</span>
+        </div>
+      </a>
+      <a class="project-item reveal" href="#" style="transition-delay:0.18s">
+        <span class="proj-num">03</span>
+        <div class="proj-info">
+          <div class="proj-name">Project Three <span class="proj-arrow">→</span></div>
+          <div class="proj-desc">The one you're most proud of — the details really shine</div>
+        </div>
+        <div class="proj-meta">
+          <span class="proj-tag">Tool</span>
+          <span class="proj-year">2023</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ABOUT / STATS -->
+  <div id="about" class="about-grid reveal">
+    <div class="about-cell">
+      <p class="about-text">
+        I'm a <strong>software engineer</strong> who cares equally about clean code and beautiful interfaces. I've built everything from internal tools to products used by thousands. Currently open to <strong>new opportunities</strong> — especially things that feel worth building.
+      </p>
+    </div>
+    <div class="about-cell">
+      <div class="stat-num">
+        <span class="countup" data-target="12">0</span><sup>+</sup>
+      </div>
+      <div class="stat-label">Projects shipped</div>
+    </div>
+    <div class="about-cell">
+      <div class="stat-num">
+        <span class="countup" data-target="5">0</span><sup>yr</sup>
+      </div>
+      <div class="stat-label">Years building</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer reveal">
+    <div class="footer-links">
+      <a class="footer-link" href="https://github.com/yourusername">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        GitHub
+      </a>
+      <a class="footer-link" href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+        Twitter
+      </a>
+      <a class="footer-link" href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email
+      </a>
+      <a class="footer-link" href="#">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </a>
+    </div>
+    <div class="footer-copy">© 2026 — yourname.dev</div>
+  </footer>
+</main>
+
+<script>
+  // CURSOR
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+  (function animRing() {
+    rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+  });
+
+  // LOADER
+  const loaderName = document.getElementById('loader-name');
+  const loaderBar = document.getElementById('loader-bar');
+  const name = 'yourname.dev';
+  name.split('').forEach((ch, i) => {
+    const s = document.createElement('span');
+    s.textContent = ch === ' ' ? '\u00a0' : ch;
+    s.style.animationDelay = (i * 0.06) + 's';
+    loaderName.appendChild(s);
+  });
+  setTimeout(() => { loaderBar.style.width = '100%'; }, 200);
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('fade-out');
+    const main = document.getElementById('main');
+    main.classList.add('visible');
+    setTimeout(revealAll, 300);
+  }, 1800);
+
+  // REVEAL ON SCROLL
+  function revealAll() {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  }
+
+  // COUNT-UP
+  function countUp(el, target, duration=1600) {
+    let start=null;
+    function step(ts) {
+      if (!start) start=ts;
+      const progress = Math.min((ts-start)/duration,1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(ease * target);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  const countObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const target = parseInt(e.target.dataset.target);
+        countUp(e.target, target);
+        countObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.countup').forEach(el => countObs.observe(el));
+</script>
+</body>
+</html>
+
